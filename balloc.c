@@ -35,10 +35,18 @@ void pmfs_init_blockmap(struct super_block *sb, unsigned long init_used_size)
 	blknode = pmfs_alloc_blocknode(sb);
 	if (blknode == NULL)
 		PMFS_ASSERT(0);
+
+	// low 부터 high 까지는 연속된 블록. 중간에 삭제되거나 업데이트가 되면?
 	blknode->block_low = sbi->block_start;
 	blknode->block_high = sbi->block_start + num_used_block - 1;
 	sbi->num_free_blocks -= num_used_block;
 	list_add(&blknode->link, &sbi->block_inuse_head);
+	
+	printk("%s: init_used_size : %u\n", __func__, init_used_size);
+	printk("%s: num_used_block : %u\n", __func__, num_used_block);
+	printk("%s: block_low : %llu\n", __func__, blknode->block_low);
+	printk("%s: block_high : %llu\n", __func__, blknode->block_high);
+	printk("%s: num_free_blocks : %u\n", __func__, sbi->num_free_blocks);
 }
 
 static struct pmfs_blocknode *pmfs_next_blocknode(struct pmfs_blocknode *i,
